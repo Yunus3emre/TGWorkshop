@@ -1,0 +1,82 @@
+﻿@{
+    ViewData["Title"] = "Products Page";
+}
+
+<style>
+    table, th, td {
+        border: 1px solid black;
+        border-collapse: collapse;
+    }
+</style>
+    
+
+<h1>All</h1>
+<table>
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Price</th>
+        <th>Category</th>
+    </tr>
+    @foreach (var product in Model.Products)
+    {
+        <tr>
+            <td>@product.Id</td>
+            <td>@product.Name</td>
+            <td>@product.Price.ToString("C")</td>
+            <td>@product.CategoryName</td>
+        </tr>
+    }
+</table>
+
+<br />
+<br />
+<div>
+    <h1>Laptops</h1>
+    <table id ="productTable">
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Price</th>
+            <th>Category</th>
+        </tr>
+    </table>
+</div>
+
+<script>
+
+    window.onload = async function () {
+        var categoryId = 1; // Seçilen kategori ID'si
+        $.ajax({
+            url: '/Home/GetFilteredProducts',
+            type: 'GET',
+            data: { categoryId: categoryId },
+            success: function (result) {
+                // Sadece verileri güncelleyin, başlıkları koruyun
+                var tableRows = ''; // Yeni tablo satırları
+                $.each(result.products, function (index, product) {
+                    var formattedPrice = formatCurrency(product.price);
+                    var row = '<tr>' +
+                        '<td>' + product.id + '</td>' +
+                        '<td>' + product.name + '</td>' +
+                        '<td> $' + formattedPrice + '</td>' +
+                        '<td>' + product.categoryName + '</td>' +
+                        '</tr>';
+                    tableRows += row;
+                });
+
+                // Tabloyu güncelleyin (başlıkları ekleyerek)
+                $("#productTable").html(tableHeaders + tableRows);
+            }
+        });
+    };
+    var tableHeaders = '<tr>' +
+        '<th>ID</th>' +
+        '<th>Name</th>' +
+        '<th>Price</th>' +
+        '<th>Category</th>' +
+        '</tr>';
+    function formatCurrency(amount) {
+        return  amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+</script>
