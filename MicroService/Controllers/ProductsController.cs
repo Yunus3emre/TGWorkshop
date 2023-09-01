@@ -50,24 +50,5 @@ namespace MicroService.Controllers
 
             return Ok(productsWithCategoryNames);
         }
-        [Route("GetProductsByCategoryId")]
-        [HttpPost]
-        public ActionResult<IEnumerable<Product>> GetProductsByCategoryId(int? categoryId)
-        {
-            if (categoryId != null)
-            {
-                var products = _dbContext.Products
-               .Where(p => p.CategoryId == categoryId)
-               .ToList();
-
-                return Ok(products);
-            }
-            else
-            {
-                var products = _dbContext.Products.ToList();
-                return Ok(products);
-            }
-           
-        }
     }
 }
